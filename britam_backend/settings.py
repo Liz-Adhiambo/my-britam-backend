@@ -128,6 +128,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
@@ -181,3 +185,4 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL='brit_users.User'
+CORS_ORIGIN_ALLOW_ALL = True

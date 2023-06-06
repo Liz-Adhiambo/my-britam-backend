@@ -37,6 +37,7 @@ def user_login_view(request):
             'Code': 200,
             'Details': {
                 'email': users.email,
+                'id':users.id,
                 'first_name': users.first_name,
                 'last_name': users.last_name,
                 'refresh': str(refresh),
@@ -55,22 +56,26 @@ def user_login_view(request):
 @api_view(['POST'])
 @permission_classes([])
 def User_signup_view(request):
-    serializer = UserSerializer(data=request.data)
+    serializer = UsersSerializer(data=request.data)
 
     if serializer.is_valid():
-        User = get_user_model()
-        user = User.objects.create_user(
-            email=request.validated_data['email'],
-            password=serializer.validated_data['password'],
-            first_name=serializer.validated_data['first_name'],
-            last_name=serializer.validated_data['last_name'],
+        email = request.data['email']
 
-            is_driver=True,
+        # Check if the email already exists
+        if User.objects.filter(email=email).exists():
+            return Response({'Success': False, 'Code': 400, 'message': 'Email already exists.'}, status=HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(
+            email=email,
+            username=request.data['username'],
+            password=request.data['password'],
+            first_name=request.data['first_name'],
+            last_name=request.data['last_name'],
+            is_user=True,
         )
 
         driver = serializer.save(user=user)
 
-        return Response({'Success': True, 'Code': 200, 'message': 'Driver created successfully.'}, status=HTTP_201_CREATED)
+        return Response({'Success': True, 'Code': 200, 'message': 'User created successfully.'}, status=HTTP_201_CREATED)
     else:
         return Response({'Success': False, 'Code': 400, 'message': serializer.errors}, status=HTTP_400_BAD_REQUEST)
-
