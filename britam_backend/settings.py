@@ -195,3 +195,4 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL='brit_users.User'
 CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = ['my-britam-backend-production.up.railway.app']
