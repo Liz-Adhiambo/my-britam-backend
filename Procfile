@@ -1,0 +1,1 @@
+web: gunicorn 'britam_backend.wsgi'
