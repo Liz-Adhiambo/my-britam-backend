@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+import dj_database_url
 from decouple import config
 from datetime import timedelta, date
 
@@ -22,12 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-^^*kxh-!%+l#bu$33m1a0f@r6k8q*1(%&(7mc80g!&9k(kl$mc'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+DATABASE_URL='postgresql://postgres:ezB098bxCZr7VFZQfAYg@containers-us-west-148.railway.app:6880/railway'
 
 
 # Application definition
@@ -78,18 +80,24 @@ WSGI_APPLICATION = 'britam_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': config("db_engine", default='django.db.backends.sqlite3'),
-        'NAME': config('db_name', default='db.sqlite3'),
-        'USER': config("db_user", default=''),
-        'PASSWORD': config("db_password", default=''),
-        # Or an IP Address that your DB is hosted on
-        'HOST': config("db_host", default=''),
-        'PORT': config("db_port", default='')
+# DATABASES = {
+#     'default': {
+#         'ENGINE': config("db_engine", default='django.db.backends.sqlite3'),
+#         'NAME': config('db_name', default='db.sqlite3'),
+#         'USER': config("db_user", default=''),
+#         'PASSWORD': config("db_password", default=''),
+#         # Or an IP Address that your DB is hosted on
+#         'HOST': config("db_host", default=''),
+#         'PORT': config("db_port", default='')
 
-    }
-}
+#     }
+# }
+
+DATABASES = {
+       'default': dj_database_url.config(
+           default=DATABASE_URL
+       )
+   }
 
 
 # Password validation
