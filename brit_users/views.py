@@ -119,3 +119,7 @@ def profile_detail(request, pk):
     elif request.method == 'DELETE':
         profile.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+@api_view(['POST'])
+def buy_policy(request):
+    pass
