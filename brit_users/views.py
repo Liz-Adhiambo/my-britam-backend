@@ -20,32 +20,37 @@ from .models import *
 @authentication_classes([])
 @permission_classes([])
 def user_login_view(request):
+    print("twenty three")
     username = request.data.get('username')
     password = request.data.get('password')
-    print("one")
+    print("oneklsl")
+    try:
 
-    user = authenticate(request, username=username, password=password)
-    print("weny")
+        user = authenticate(request, username=username, password=password)
+        print("weny")
+        print(user)
 
-    if user is not None:
-        print("9")
-        # Authentication successful
-        users=User.objects.get(username=username)
-        refresh = RefreshToken.for_user(user)
+        if user is not None:
+            print("9")
+            # Authentication successful
+            users=User.objects.get(username=username)
+            refresh = RefreshToken.for_user(user)
 
-        # Return the user's details, refresh token, and access token in the response
-        return Response({
-            'Success': True,
-            'Code': 200,
-            'Details': {
-                'email': users.email,
-                'id':users.id,
-                'first_name': users.first_name,
-                'last_name': users.last_name,
-                'refresh': str(refresh),
-                'access': str(refresh.access_token),
-            }
-        }, status=HTTP_200_OK)
+            # Return the user's details, refresh token, and access token in the response
+            return Response({
+                'Success': True,
+                'Code': 200,
+                'Details': {
+                    'email': users.email,
+                    'id':users.id,
+                    'first_name': users.first_name,
+                    'last_name': users.last_name,
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
+                }
+            }, status=HTTP_200_OK)
+    except:
+        print('the hell is going on')
     else:
         # Authentication failed
         return Response({
@@ -84,19 +89,26 @@ def User_signup_view(request):
 
 
 
-@api_view(['GET', 'POST'])
-def profile_list(request):
-    if request.method == 'GET':
-        profiles = Profile.objects.all()
-        serializer = ProfileSerializer(profiles, many=True)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        serializer = ProfileSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+# @api_view(['GET', 'POST'])
+# def profile_list(request):
+#     if request.method == 'GET':
+#         profiles = Profile.objects.all()
+#         serializer = ProfileSerializer(profiles, many=True)
+#         return Response(serializer.data)
+@api_view(['POST'])
+def create_profile(request, id):
+    try:
+        user = User.objects.get(pk=id)
+        print(user)
+    except Users.DoesNotExist:
+        return Response("User not found", status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = ProfileSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET', 'PUT', 'DELETE'])
 def profile_detail(request, pk):

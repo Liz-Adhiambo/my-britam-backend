@@ -28,8 +28,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app']
-DATABASE_URL='postgresql://postgres:ezB098bxCZr7VFZQfAYg@containers-us-west-148.railway.app:6880/railway'
+ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app','127.0.0.1']
+# DATABASE_URL='postgresql://postgres:ezB098bxCZr7VFZQfAYg@containers-us-west-148.railway.app:6880/railway'
 
 
 # Application definition
@@ -80,24 +80,24 @@ WSGI_APPLICATION = 'britam_backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': config("db_engine", default='django.db.backends.sqlite3'),
-#         'NAME': config('db_name', default='db.sqlite3'),
-#         'USER': config("db_user", default=''),
-#         'PASSWORD': config("db_password", default=''),
-#         # Or an IP Address that your DB is hosted on
-#         'HOST': config("db_host", default=''),
-#         'PORT': config("db_port", default='')
-
-#     }
-# }
-
 DATABASES = {
-       'default': dj_database_url.config(
-           default=DATABASE_URL
-       )
-   }
+    'default': {
+        'ENGINE': config("db_engine", default='django.db.backends.sqlite3'),
+        'NAME': config('db_name', default='db.sqlite3'),
+        'USER': config("db_user", default=''),
+        'PASSWORD': config("db_password", default=''),
+        # Or an IP Address that your DB is hosted on
+        'HOST': config("db_host", default=''),
+        'PORT': config("db_port", default='')
+
+    }
+}
+
+# DATABASES = {
+#        'default': dj_database_url.config(
+#            default=DATABASE_URL
+#        )
+#    }
 
 
 # Password validation
@@ -171,28 +171,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
 }
 
 AUTH_USER_MODEL='brit_users.User'
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app','https://127.0.0.1']
