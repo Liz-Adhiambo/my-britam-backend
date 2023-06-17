@@ -23,3 +23,25 @@ class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
         fields = ('__all__')
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Profile
+        fields = ('__all__')
+
+class PolicyTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolicyTypes
+        fields = ('__all__')
+
+class PolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Policy
+        fields = ('__all__')
+
+
+class UserPolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PolicyTypes
+        fields = ('__all__')

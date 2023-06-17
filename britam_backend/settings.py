@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app']
+ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app','127.0.0.1']
 DATABASE_URL='postgresql://postgres:ezB098bxCZr7VFZQfAYg@containers-us-west-148.railway.app:6880/railway'
 
 
@@ -171,6 +171,12 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=180),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
@@ -195,4 +201,4 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL='brit_users.User'
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app','https://127.0.0.1']
