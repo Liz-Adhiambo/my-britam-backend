@@ -18,7 +18,7 @@ urlpatterns = [
     path('policy/update/<int:pk>',update_policy, name='update_policy'),
     path('policy/delete/<int:pk>',delete_policy, name='delete_policy'),
     path('policy/get_all/',get_all_policy, name='get_all_policy'),
-    path('policy/buy/',user_policy_create_view, name='user_policy_create_view'),
+    path('policy/buy',user_policy_create_view, name='user_policy_create_view'),
 
 
 ]

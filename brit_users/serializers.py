@@ -43,5 +43,12 @@ class PolicySerializer(serializers.ModelSerializer):
 
 class UserPolicySerializer(serializers.ModelSerializer):
     class Meta:
-        model = PolicyTypes
+        model = UserPolicy
         fields = ('__all__')
+
+
+class User2PolicySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPolicy
+        fields = ('__all__')
+

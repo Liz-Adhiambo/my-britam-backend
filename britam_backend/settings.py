@@ -201,4 +201,4 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL='brit_users.User'
 CORS_ORIGIN_ALLOW_ALL = True
-CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app','https://127.0.0.1']
+CSRF_TRUSTED_ORIGINS = ['https://my-britam-backend-production.up.railway.app','http://127.0.0.1']

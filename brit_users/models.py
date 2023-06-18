@@ -77,8 +77,8 @@ class UserPolicy(models.Model):
     createdAt = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, blank=True, null=True)
 
-    def __str__(self):
-        return self.status
+    # def __str__(self):
+    #     return self.status
     
     
 
