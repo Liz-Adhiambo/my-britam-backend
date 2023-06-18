@@ -307,13 +307,28 @@ def user_policy_create_view(request):
             today = datetime.date.today().strftime('%Y%m%d')
             unique_id = str(uuid.uuid4().fields[-1])[:8]
             policy_number=f'B-{today}-{unique_id}'
+            policyduration=Policy.objects.get(policy_id=policy_id).policy_duration
+            if frequency=='monthly':
+                n_premium=(sum_assured/policyduration)
+                premium=(n_premium/12)
+            if frequency=='quarterly':
+                premium=premium*4
+            if frequency=='semi-annually':
+                premium=premium*6
+            if frequency=='annually':
+                premium=premium*12
 
-            userpolicy = UserPolicy.objects.create(policy_number=policy_number,user_id=user,frequency=frequency,premium=premium,policy_id_id=policy_id, postal_address=postal_address,
+            next_premium=premium * 0.2
+
+
+            userpolicy = UserPolicy.objects.create(policy_number=policy_number,user_id=user,frequency=frequency,premium=premium, next_premium=next_premium,policy_id_id=policy_id, postal_address=postal_address,
             telephone_number=telephone_number,email=email, pin=pin,life_assured=life_assured,country=country,
             nationality=nationality,marital_status=marital_status,resident_country=resident_country,sum_assured=sum_assured,
             status=status,dob=dob,full_name=full_name)
 
-            return Response({'success': True, 'code': HTTP_200_OK, 'message': 'User Created Successfully'}, status=HTTP_200_OK)
+            policy2=UserPolicySerializer(userpolicy)
+
+            return Response({'success': True, 'code': HTTP_200_OK, 'message': 'Policy Created Successfully','policy':policy2.data}, status=HTTP_200_OK)
 
     return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
 
