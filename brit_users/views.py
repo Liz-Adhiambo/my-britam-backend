@@ -277,19 +277,23 @@ def buy_policy(request):
 ### buy policy
 @api_view(['POST'])
 def user_policy_create_view(request):
-    serializer = UserPolicy(data=request.data)
+    serializer = UserPolicySerializer(data=request.data)
     if serializer.is_valid():
         is_draft = serializer.validated_data.get('is_draft')
         if is_draft:
+            print('what')
             # Create a draft employee
             userpolicy = serializer.save()
             return Response({'success': True, 'code': HTTP_200_OK, 'message': 'Draft UserPolicy Created Successfully'}, status=HTTP_200_OK)
         else:
+            print("whats_up")
             user = serializer.data.get('user')
             frequency = serializer.data.get('frequency')
             premium = serializer.data.get('premium')
             next_premium = serializer.data.get('next_premium')
+            print('tf')
             policy_id=serializer.data.get('policy_id')
+            print(policy_id)
             postal_address = serializer.data.get('postal_address')
             telephone_number = serializer.data.get('telephone_number')
             email = serializer.data.get('email')
@@ -302,26 +306,37 @@ def user_policy_create_view(request):
             sum_assured = serializer.data.get('sum_assured')
             status = serializer.data.get('status')
             dob = serializer.data.get('dob')
+            print(dob)
             full_name = serializer.data.get('full_name')
 
             today = datetime.date.today().strftime('%Y%m%d')
             unique_id = str(uuid.uuid4().fields[-1])[:8]
             policy_number=f'B-{today}-{unique_id}'
-            policyduration=Policy.objects.get(policy_id=policy_id).policy_duration
+            print(policy_number)
+            policyduration=Policy.objects.get(id=policy_id).policy_duration
+            print(policyduration)
             if frequency=='monthly':
-                n_premium=(sum_assured/policyduration)
+                n_premium=(float(sum_assured)/float(policyduration))
                 premium=(n_premium/12)
             if frequency=='quarterly':
+                n_premium=(float(sum_assured)/float(policyduration))
+                premium=(n_premium/12)
                 premium=premium*4
             if frequency=='semi-annually':
+                n_premium=(float(sum_assured)/float(policyduration))
+                premium=(n_premium/12)
                 premium=premium*6
             if frequency=='annually':
+                n_premium=(float(sum_assured)/float(policyduration))
+                premium=(n_premium/12)
                 premium=premium*12
 
-            next_premium=premium * 0.2
+            next_premium=premium * 0.8
+
+            print("hello")
 
 
-            userpolicy = UserPolicy.objects.create(policy_number=policy_number,user_id=user,frequency=frequency,premium=premium, next_premium=next_premium,policy_id_id=policy_id, postal_address=postal_address,
+            userpolicy = UserPolicy.objects.create(Policy_number=policy_number,user_id=user,frequency=frequency,premium=premium, next_premium=next_premium,policy_id_id=policy_id, postal_address=postal_address,
             telephone_number=telephone_number,email=email, pin=pin,life_assured=life_assured,country=country,
             nationality=nationality,marital_status=marital_status,resident_country=resident_country,sum_assured=sum_assured,
             status=status,dob=dob,full_name=full_name)
