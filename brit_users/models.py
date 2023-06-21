@@ -1,5 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+import uuid
+
+
+def generate_ref_code():
+    code=str(uuid.uuid4()).replace('-', '').replace[:12]
+    return code
+    
 
 # Create your models here.
 class User(AbstractUser):
@@ -11,12 +18,19 @@ class Users(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True,blank=True)
     middle_name = models.CharField(max_length=255,blank=True, null=True)
     dob = models.CharField(max_length=50,blank=True, null=True)
+    code=models.CharField(max_length=50,blank=True, null=True)
+    referred_by=models.ForeignKey(User,on_delete=models.SET_NULL,blank=True, null=True, related_name='referred_by')
+    referral_link=models.CharField(max_length=450,blank=True, null=True)
     gender = models.CharField(max_length=50,blank=True, null=True)
     phone_number = models.CharField(max_length=255,blank=True, null=True)
     full_name=models.CharField(max_length=455, blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        self.full_name = self.user.first_name + ' ' + self.middle_name + ' ' + self.user.last_name
+        if self.code == None:
+            code=str(uuid.uuid4()).replace('-', '')[:12]
+            self.code = code
+            self.full_name = self.user.first_name + ' ' + self.middle_name + ' ' + self.user.last_name
+        self.referral_link=f'https://my-britam-backend-production.up.railway.app/api/v1/signup/'+(self.code)
         super().save(*args, **kwargs)
     
     def __str__(self):

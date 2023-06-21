@@ -59,6 +59,47 @@ def user_login_view(request):
             'Code': 401,
             'message': 'Invalid email or password.'
         }, status=HTTP_400_BAD_REQUEST)
+    
+
+@api_view(['POST'])
+@permission_classes([])
+def User_signup_referral_view(request,code):
+    serializer = UsersSerializer(data=request.data)
+    try:
+        r_code=Users.objects.get(code=code)
+        print(r_code.user)
+    except:
+        return Response({'Success': False, 'Code': 400, 'message': 'That refferral code does not exist.'}, status=HTTP_400_BAD_REQUEST)
+
+    if serializer.is_valid():
+        email = request.data['email']
+
+
+        # Check if the email already exists
+        if User.objects.filter(email=email).exists():
+            return Response({'Success': False, 'Code': 400, 'message': 'Email already exists.'}, status=HTTP_400_BAD_REQUEST)
+
+        user = User.objects.create_user(
+            email=email,
+            username=request.data['username'],
+            password=request.data['password'],
+            first_name=request.data['first_name'],
+            last_name=request.data['last_name'],
+            is_user=True,
+        )
+
+        serializer.save(user=user)
+
+        r_user=Users.objects.get(user=user)
+        r_user.referred_by_id=r_code.user
+        r_user.save()
+        
+
+
+
+        return Response({'Success': True, 'Code': 200, 'message': 'User created successfully.'}, status=HTTP_201_CREATED)
+    else:
+        return Response({'Success': False, 'Code': 400, 'message': serializer.errors}, status=HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
@@ -346,6 +387,20 @@ def user_policy_create_view(request):
             return Response({'success': True, 'code': HTTP_200_OK, 'message': 'Policy Created Successfully','policy':policy2.data}, status=HTTP_200_OK)
 
     return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+#Get users Policies
+
+@api_view(['GET'])
+def get_users_policy(request, pk):
+    try:
+        policies = UserPolicy.objects.filter(user_id=pk)
+        serializer = UserPolicySerializer(policies, many=True)
+        return Response({"user_policies":serializer.data})
+    except:
+        return Response(status=404)
+    
+
+###generate user referral url###
 
 
 
