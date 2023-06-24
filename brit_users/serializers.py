@@ -19,6 +19,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('__all__')
 
+class UserSerializer2(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id','first_name','last_name','email','date_joined',)
+
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -55,7 +60,7 @@ class User2PolicySerializer(serializers.ModelSerializer):
         fields = ('__all__')
 
 class ReferredUserSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
+    user = UserSerializer2()
     class Meta:
         model = Users
-        fields = ['user', 'middle_name', 'dob', 'code', 'referred_by', 'referral_link', 'gender', 'phone_number', 'full_name']
+        fields = ['user', 'middle_name', 'dob', 'code', 'referred_by', 'referral_link', 'gender', 'phone_number', 'full_name','bio','profile_photo']
