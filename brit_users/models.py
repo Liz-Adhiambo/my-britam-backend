@@ -58,8 +58,9 @@ class PolicyTypes(models.Model):
 class Policy(models.Model):
     policy_type =models.ForeignKey(PolicyTypes, on_delete=models.CASCADE, blank=True, null=True)
     policy_name = models.CharField(max_length=255,blank=True, null=True)
-    policy_duration = models.CharField(max_length=50,blank=True, null=True)
-    policy_status= models.CharField(max_length=50,blank=True, null=True)
+    policy_image= models.CharField(max_length=255,blank=True, null=True)
+    policy_duration = models.CharField(max_length=255,blank=True, null=True)
+    policy_status= models.CharField(max_length=255,blank=True, null=True)
     policy_details=models.TextField(blank=True,null=True)
     createdAt = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, blank=True, null=True)
