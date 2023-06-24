@@ -493,6 +493,15 @@ def get_user_details(request,pk):
     except Policy.DoesNotExist:
         return Response(status=404)
 
+@api_view(['GET'])
+def get_user_policies(request,pk):
+    try:
+        user = Users.objects.get(pk=pk)
+        serializer = UserPolicySerializer(user, many=True)
+        return Response(serializer.data)
+    except Policy.DoesNotExist:
+        return Response(status=404)
+
 @api_view(['PUT'])
 def update_policy(request, pk):
     try:
