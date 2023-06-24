@@ -19,9 +19,10 @@ urlpatterns = [
     path('policy/delete/<int:pk>',delete_policy, name='delete_policy'),
     path('policy/get_all/',get_all_policy, name='get_all_policy'),
     path('policy/buy',user_policy_create_view, name='user_policy_create_view'),
-    path('policy/user/list',get_users_policy, name='get_users_policy'),
+    path('policy/user/list/<int:pk>',get_users_policy, name='get_users_policy'),
     path('signup/<str:code>',User_signup_referral_view, name='User_signup_referral_view'),
     path('user/loyalty/points/<int:pk>',referral_points, name='referral_points'),
     path('user/details/<int:pk>',get_user_details, name='get_user_details'),
+    
 
 ]
