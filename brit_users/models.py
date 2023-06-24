@@ -22,6 +22,9 @@ class Users(models.Model):
     referred_by=models.ForeignKey(User,on_delete=models.SET_NULL,blank=True, null=True, related_name='referred_by')
     referral_link=models.CharField(max_length=450,blank=True, null=True)
     gender = models.CharField(max_length=50,blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    profile_photo = models.CharField(max_length=255,blank=True, null=True)
+    status = models.CharField(max_length=50,blank=True, null=True)
     phone_number = models.CharField(max_length=255,blank=True, null=True)
     full_name=models.CharField(max_length=455, blank=True, null=True)
 
