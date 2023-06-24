@@ -19,6 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('__all__')
 
+
+
 class UsersSerializer(serializers.ModelSerializer):
     class Meta:
         model = Users
@@ -52,3 +54,8 @@ class User2PolicySerializer(serializers.ModelSerializer):
         model = UserPolicy
         fields = ('__all__')
 
+class ReferredUserSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    class Meta:
+        model = Users
+        fields = ['user', 'middle_name', 'dob', 'code', 'referred_by', 'referral_link', 'gender', 'phone_number', 'full_name']

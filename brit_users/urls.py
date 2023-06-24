@@ -21,6 +21,6 @@ urlpatterns = [
     path('policy/buy',user_policy_create_view, name='user_policy_create_view'),
     path('policy/user/list',get_users_policy, name='get_users_policy'),
     path('signup/<str:code>',User_signup_referral_view, name='User_signup_referral_view'),
-
+    path('user/loyalty/points/<int:pk>',referral_points, name='referral_points'),
 
 ]

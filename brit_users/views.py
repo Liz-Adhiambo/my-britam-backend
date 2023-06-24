@@ -175,8 +175,19 @@ def profile_detail(request, pk):
         return Response(status=status.HTTP_204_NO_CONTENT)
 ####buy policy
 @api_view(['POST'])
-def buy_policy(request):
-    pass
+def referral_points(request,pk):
+    try:
+        user=User.objects.get(id=pk)
+        print(user)
+    except:
+        return Response({'Success': False, 'Code': 400}, status=HTTP_400_BAD_REQUEST)
+    user2=Users.objects.get(user_id=user)
+    referred_users=Users.objects.filter(referred_by_id=user)
+    count=referred_users.count()
+    points=count*2
+    serializer=ReferredUserSerializer(referred_users,many=True)
+    return Response({'Success': True, 'Code': 200, 'referred_users': serializer.data, "Loyalty_points":points}, status=HTTP_200_OK)
+
 
 # @api_view(['POST'])
 # def employees_edit_view(request, id):
