@@ -514,6 +514,18 @@ def update_policy(request, pk):
     except Policy.DoesNotExist:
         return Response(status=404)
 
+@api_view(['PUT'])
+def update_user_info(request, pk):
+    try:
+        policy = Users.objects.get(pk=pk)
+        serializer = UsersSerializer(policy, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=400)
+    except Users.DoesNotExist:
+        return Response(status=404)
+
 @api_view(['DELETE'])
 def delete_policy(request, pk):
     try:

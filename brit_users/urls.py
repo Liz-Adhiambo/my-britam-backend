@@ -23,6 +23,7 @@ urlpatterns = [
     path('signup/<str:code>',User_signup_referral_view, name='User_signup_referral_view'),
     path('user/loyalty/points/<int:pk>',referral_points, name='referral_points'),
     path('user/details/<int:pk>',get_user_details, name='get_user_details'),
+    path('user/profile/detail/<int:pk>',update_user_info, name='update_user_info'),
     
 
 ]
