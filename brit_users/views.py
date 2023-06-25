@@ -405,7 +405,7 @@ def user_policy_create_view(request):
 def get_users_policy(request, pk):
     try:
         policies = UserPolicy.objects.filter(user_id=pk)
-        serializer = UserPolicySerializer(policies, many=True)
+        serializer = UserPolicySerializer2(policies, many=True)
         return Response({"user_policies":serializer.data})
     except:
         return Response(status=404)
