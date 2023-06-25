@@ -49,9 +49,9 @@ class PolicySerializer(serializers.ModelSerializer):
 
 
 class UserPolicySerializer(serializers.ModelSerializer):
-    policy_id=PolicySerializer
+    policy_id=PolicySerializer()
     class Meta:
-        model = UserPolicy()
+        model = UserPolicy
         fields = ('Policy_number','is_draft','policy_id','user','frequency','premium','next_premium','full_name','dob','postal_address','telephone_number','email','pin','life_assured','country','nationality','marital_status','resident_country','sum_assured','status','createdAt','updatedAt')
 
 
