@@ -49,9 +49,10 @@ class PolicySerializer(serializers.ModelSerializer):
 
 
 class UserPolicySerializer(serializers.ModelSerializer):
+    policy_id=PolicySerializer
     class Meta:
         model = UserPolicy
-        fields = ('__all__')
+        fields = ('Policy_number','is_draft','user','frequency','premium','next_premium','full_name','dob','postal_address','telephone_number','email','pin','life_assured','country','nationality','marital_status','resident_country','sum_assured','status','createdAt','updatedAt')
 
 
 class User2PolicySerializer(serializers.ModelSerializer):
