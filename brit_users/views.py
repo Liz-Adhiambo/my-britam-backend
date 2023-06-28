@@ -436,27 +436,24 @@ def call_back(request):
     print('This is starting')
     response_data=(request.data)
     print(request.data)
-    # mpesa_receipt_number = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value']
-    # result_desc = response_data['Body']['stkCallback']['ResultDesc']
-    # amount = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']
-    # transaction_date = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value']
-    # checkout_request_id = response_data['Body']['stkCallback']['CheckoutRequestID']
+    mpesa_receipt_number = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value']
+    result_desc = response_data['Body']['stkCallback']['ResultDesc']
+    amount = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']
+    transaction_date = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value']
+    checkout_request_id = response_data['Body']['stkCallback']['CheckoutRequestID']
     print(request.data['Body']['stkCallback']['ResultDesc'])
 
-    
-
-
-    # transaction=Transaction.objects.get(checkout_request_id=checkout_request_id)
-    # if mpesa_receipt_number == None:
-    #     transaction.status=False
-    # else:
-    #     transaction.status=True
-    #     transaction.save()
-    # transaction.time_stamp = transaction_date
-    # transaction.amount = amount
-    # transaction.result_description = result_desc
-    # transaction.mpesa_receipt_number = mpesa_receipt_number
-    # transaction.save()
+    transaction=Transaction.objects.get(checkout_request_id=checkout_request_id)
+    if mpesa_receipt_number == None:
+        transaction.status=False
+    else:
+        transaction.status=True
+        transaction.save()
+    transaction.time_stamp = transaction_date
+    transaction.amount = amount
+    transaction.result_description = result_desc
+    transaction.mpesa_receipt_number = mpesa_receipt_number
+    transaction.save()
     
     return Response(request.data)
 
