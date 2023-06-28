@@ -1,3 +1,6 @@
+import base64
+import requests
+from django.conf import settings
 from django.shortcuts import render
 import uuid
 import datetime 
@@ -5,7 +8,7 @@ import datetime
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.response import Response
@@ -16,6 +19,12 @@ from django.contrib.auth import get_user_model
 from .serializers import *
 
 from .models import *
+from .mpesa import MpesaService
+from django.http import HttpResponse
+
+
+
+
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -534,3 +543,254 @@ def delete_policy(request, pk):
         return Response(status=204)
     except Policy.DoesNotExist:
         return Response(status=404)
+    
+# ###mpesa###
+# def create_password(self, short_code, pass_key):
+#         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+#         data = short_code + pass_key + timestamp
+#         encoded = base64.b64encode(data.encode("utf-8"))
+#         return encoded.decode("utf-8")
+
+
+# class MpesaService():
+#     BASE_URL = "https://sandbox.safaricom.co.ke"
+#     CONSUMER_KEY = 'wPcudd67umTpFGoO09TOaEPVwyePSPNf'
+#     CONSUMER_SECRET = 'n5pPou2lA3C3lZhh'
+#     PASS_KEY = 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919'
+
+
+#     def base_64_encode(self, consumer_key, consumer_secret):
+#         """
+#         Returns a base64 encoded string
+#         """
+#         data = consumer_key + ":" + consumer_secret
+#         encoded = base64.b64encode(data.encode("utf-8"))
+#         return encoded.decode("utf-8")
+    
+#     # def get_access_token(self):
+#     #     url = self.BASE_URL + "/oauth/v1/generate?grant_type=client_credentials"
+#     #     headers = {
+#     #             "Authorization": "Basic " + self.base_64_encode(self.CONSUMER_KEY, self.CONSUMER_SECRET)
+#     #     }
+
+#     #     response = requests.get(url, headers=headers)
+
+#     #     # response = requests.request("GET", 'https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials', headers = { 'Authorization': 'Bearer d1BjdWRkNjd1bVRwRkdvTzA5VE9hRVBWd3llUFNQTmY6bjVwUG91MmxBM0MzbFpoaA==' })
+#     #     # print(response.text.encode('utf8'))
+
+#     #     return response.json()["access_token"]
+
+#     def generate_access_token(consumer_key, consumer_secret):
+#         url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+#         auth_string = consumer_key + ":" + consumer_secret
+#         base64_auth_string = base64.b64encode(auth_string.encode()).decode()
+
+#         headers = {
+#             "Authorization": "Basic " + base64_auth_string,
+#             "Content-Type": "application/json"
+#         }
+
+#         response = requests.get(url, headers=headers)
+#         access_token = response.json()["access_token"]
+#         return access_token
+
+#     # Replace with your actual Consumer Key and Consumer Secret
+#     consumer_key = "wPcudd67umTpFGoO09TOaEPVwyePSPNf"
+#     consumer_secret = "n5pPou2lA3C3lZhh"
+
+#     access_token = generate_access_token(consumer_key, consumer_secret)
+#     print("Access Token:", access_token)
+    
+#     def create_password(self, short_code, pass_key):
+#         timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+#         data = short_code + pass_key + timestamp
+#         encoded = base64.b64encode(data.encode("utf-8"))
+#         return encoded.decode("utf-8")
+
+#     def send_stk_push(self,amount,phone ):
+        
+#         url = self.BASE_URL + "/mpesa/stkpush/v2/processrequest"
+#         consumer_key = "wPcudd67umTpFGoO09TOaEPVwyePSPNf"
+#         consumer_secret = "n5pPou2lA3C3lZhh"
+
+#         access_token = self.generate_access_token(consumer_key, consumer_secret)
+#         access_token = self.access_token
+
+#         headers = {
+#                 "Authorization": "Bearer " + access_token,
+#                 "Content-Type": "application/json"
+#         }
+
+#         request = {
+#                 "BusinessShortCode": "174379",
+#                 "Password": self.create_password("174379", self.PASS_KEY),
+#                 "Timestamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+#                 "TransactionType": "CustomerPayBillOnline",
+#                 "Amount": amount,
+#                 "PartyA": phone,
+#                 "PartyB": "174379",
+#                 "PhoneNumber": phone,
+#                 "CallBackURL": "",
+#                 "AccountReference": "Test",
+#                 "TransactionDesc": "Test"
+#         }
+
+#         response = requests.post(url, json=request, headers=headers)
+#         print(response)
+#         return response.json()
+
+#     def get_stk_push_status(self, checkout_request_id):
+#         url = self.BASE_URL + "/mpesa/stkpushquery/v1/query"
+#         access_token = self.generate_access_token()
+
+#         headers = {
+#                 "Authorization": "Bearer " + access_token,
+#                 "Content-Type": "application/json"
+#         }
+
+#         request = {
+#                 "BusinessShortCode": "174379",
+#                 "Password": self.create_password("174379", self.PASS_KEY),
+#                 "Timestamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+#                 "CheckoutRequestID": checkout_request_id
+#         }
+
+#         response = requests.post(url, json=request, headers=headers)
+#         return response.json()
+
+#     def perform_full_transaction(self, amount, phone):
+#         response = self.send_stk_push(amount, phone)
+#         print(response)
+#         checkout_request_id = response["CheckoutRequestID"]
+#         import time
+#         while True:
+#             print(response)
+#             response = self.get_stk_push_status(checkout_request_id)
+
+#             try:
+#                 if response["errorMessage"]:
+#                     continue
+#             except KeyError:
+#                 #if response["resultDesc"} contains cancelled
+#                 if response["ResultDesc"] == "Request cancelled by user":
+#                     return False
+#                 elif response["ResultDesc"] == "The service request is processed successfully.":
+#                     return True
+#                 else:
+#                     return response
+#             time.sleep(5)
+
+
+# mpesa_service = MpesaService()
+
+# print(mpesa_service.perform_full_transaction(1, "254791315571"))
+
+
+
+
+
+
+
+# def get_access_token():
+#     url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+#     consumer_key_secret = settings.MPESA_CONSUMER_KEY + ":" + settings.MPESA_CONSUMER_SECRET
+#     #base64 encode the consumer_key and consumer_secret
+#     consumer_key_secret = base64.b64encode(consumer_key_secret.encode("utf-8"))
+#     headers = {
+#             'Authorization': 'Basic ' + consumer_key_secret.decode("utf-8"),
+#             'Content-Type': 'application/json'
+#         }
+
+#     response = requests.request("GET", url, headers=headers)
+#     return response.json()['access_token']
+def create_password(short_code, pass_key):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        data = short_code + pass_key + timestamp
+        encoded = base64.b64encode(data.encode("utf-8"))
+        return encoded.decode("utf-8")
+
+def generate_access_token(consumer_key, consumer_secret):
+        url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+        auth_string = consumer_key + ":" + consumer_secret
+        base64_auth_string = base64.b64encode(auth_string.encode()).decode()
+
+        headers = {
+            "Authorization": "Basic " + base64_auth_string,
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(url, headers=headers)
+        access_token = response.json()["access_token"]
+        return access_token
+
+    
+
+
+@api_view(['POST'])
+def call_back(request): 
+    print('This is starting')
+    response_data=(request.data)
+    print(request.data)
+    # mpesa_receipt_number = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value']
+    # result_desc = response_data['Body']['stkCallback']['ResultDesc']
+    # amount = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']
+    # transaction_date = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value']
+    # checkout_request_id = response_data['Body']['stkCallback']['CheckoutRequestID']
+    print(request.data['Body']['stkCallback']['ResultDesc'])
+
+    
+
+
+    # transaction=Transaction.objects.get(checkout_request_id=checkout_request_id)
+    # if mpesa_receipt_number == None:
+    #     transaction.status=False
+    # else:
+    #     transaction.status=True
+    #     transaction.save()
+    # transaction.time_stamp = transaction_date
+    # transaction.amount = amount
+    # transaction.result_description = result_desc
+    # transaction.mpesa_receipt_number = mpesa_receipt_number
+    # transaction.save()
+    
+    return Response(request.data)
+
+
+@api_view(['POST'])
+def stk_request(request):
+    
+    token = request.headers["Authorization"]
+
+    token = token.split(" ")[1]
+    decoded_token = AccessToken(token)
+    decoded_payload = decoded_token.payload['user_id']
+    print (decoded_payload)
+    user=decoded_payload
+
+    data = request.data
+    phone = data.get('phone')
+    amount = data.get('amount')
+
+    transaction=MpesaService(user,amount,phone)
+    resp=transaction.perform_full_transaction()
+    
+    print(resp)
+    if "errorCode" in resp:
+        return Response({"success":False,"message":"Push Not sent successfully"})
+    else:
+        checkout_id=resp['CheckoutRequestID']
+        transaction=Transaction.objects.create(
+            user_id=user,
+            checkout_request_id=checkout_id,
+            phone_number=phone
+
+        )
+        return Response({"success":True,"message":"Push sent successfully"})
+    
+    
+    
+
+
+ 
+    
+  

@@ -97,6 +97,22 @@ class UserPolicy(models.Model):
 
     # def __str__(self):
     #     return self.status
+
+
+
+    
+class Transaction(models.Model):
+    """This model records all the mpesa payment transactions"""
+    user=models.ForeignKey(Users, on_delete=models.CASCADE)
+    time_stamp = models.CharField(max_length=350)
+    amount = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
+    transaction_desc = models.CharField(max_length=200, blank=True, null=True)
+    checkout_request_id = models.CharField(max_length=200, blank=True, null=True)
+    status = models.BooleanField(default=True)
+    mpesa_receipt_number = models.CharField(max_length=200, blank=True, null=True)
+    result_description = models.CharField(max_length=200, blank=True, null=True)
+    
     
     
 
