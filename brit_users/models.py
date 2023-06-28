@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
+from ckeditor.fields import RichTextField
+from embed_video.fields import EmbedVideoField
+
 
 
 def generate_ref_code():
@@ -112,6 +115,25 @@ class Transaction(models.Model):
     status = models.BooleanField(default=True)
     mpesa_receipt_number = models.CharField(max_length=200, blank=True, null=True)
     result_description = models.CharField(max_length=200, blank=True, null=True)
+
+
+class LoyaltyPoints(models.Model):
+    user = models.ForeignKey(Users, on_delete=models.CASCADE)
+    points = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Loyalty Points - {self.user.full_name}"
+    
+class EducationContent(models.Model):
+    title = models.CharField(max_length=200)
+    content = RichTextField()
+    video = EmbedVideoField(blank=True)
+    author = models.CharField(max_length=100)
+    publication_date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
     
     
     

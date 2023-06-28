@@ -186,16 +186,47 @@ def profile_detail(request, pk):
 @api_view(['POST'])
 def referral_points(request,pk):
     try:
-        user=User.objects.get(id=pk)
+        user = User.objects.get(id=pk)
         print(user)
-    except:
+    except User.DoesNotExist:
         return Response({'Success': False, 'Code': 400}, status=HTTP_400_BAD_REQUEST)
-    user2=Users.objects.get(user_id=user)
-    referred_users=Users.objects.filter(referred_by_id=user)
-    count=referred_users.count()
-    points=count*2
-    serializer=ReferredUserSerializer(referred_users,many=True)
-    return Response({'Success': True, 'Code': 200, 'referred_users': serializer.data, "Loyalty_points":points}, status=HTTP_200_OK)
+
+    user2 = Users.objects.get(user_id=user)
+    referred_users = Users.objects.filter(referred_by_id=user)
+    count = referred_users.count()
+    points = count * 2
+
+    # Save loyalty points for the user
+    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user=user)
+    loyalty_points.points += points
+    loyalty_points.save()
+
+    serializer = ReferredUserSerializer(referred_users, many=True)
+    return Response({'Success': True, 'Code': 200, 'referred_users': serializer.data, 'Loyalty_points': points}, status=HTTP_200_OK)
+#####Redeem loyalty points####
+@api_view(['POST'])
+def redeem_points(request, pk):
+    try:
+        user = User.objects.get(id=pk)
+    except User.DoesNotExist:
+        return Response({'Success': False, 'Code': 400}, status=HTTP_400_BAD_REQUEST)
+
+    # Retrieve the loyalty points for the user
+    loyalty_points = LoyaltyPoints.objects.get(user=user)
+
+    # Calculate the discount based on the redeemed points
+    redeemed_points = request.data.get('redeemed_points', 0)
+    policy = request.data.get('policy')
+    discount = (redeemed_points // 50) * 0.98  # 2% discount for every 50 points redeemed
+    premium=UserPolicy.objects.get(id=policy)
+    premium.next_premium=discount
+    premium.save()
+
+    # Update the loyalty points and apply the discount
+    loyalty_points.points -= redeemed_points
+    loyalty_points.save()
+
+    return Response({'Success': True, 'Code': 200, 'Discount': discount}, status=HTTP_200_OK)
 
 
 ### buy policy
@@ -489,7 +520,15 @@ def stk_request(request):
         )
         return Response({"success":True,"message":"Push sent successfully"})
     
-    
+####general and life policies###
+@api_view(['GET'])
+def get_grouped_policies(request,pk):
+    try:
+        policy = Policy.objects.get(policy_type_id=pk)
+        serializer = PolicySerializer(policy, many=True)
+        return Response(serializer.data)
+    except Policy.DoesNotExist:
+        return Response(status=404)
     
 
 
