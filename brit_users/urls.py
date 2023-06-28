@@ -24,6 +24,11 @@ urlpatterns = [
     path('user/loyalty/points/<int:pk>',referral_points, name='referral_points'),
     path('user/details/<int:pk>',get_user_details, name='get_user_details'),
     path('user/profile/detail/<int:pk>',update_user_info, name='update_user_info'),
+
+    ###mpesa###
+
+    path('callback', call_back, name='call_back'),
+    path('stk_request', stk_request, name='stk_request'),
     
 
 ]

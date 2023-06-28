@@ -1,3 +1,6 @@
+import base64
+import requests
+from django.conf import settings
 from django.shortcuts import render
 import uuid
 import datetime 
@@ -5,7 +8,7 @@ import datetime
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from django.contrib.auth import authenticate
 from rest_framework import status
 from rest_framework.response import Response
@@ -16,6 +19,12 @@ from django.contrib.auth import get_user_model
 from .serializers import *
 
 from .models import *
+from .mpesa import MpesaService
+from django.http import HttpResponse
+
+
+
+
 
 @api_view(['POST'])
 @authentication_classes([])
@@ -187,143 +196,6 @@ def referral_points(request,pk):
     points=count*2
     serializer=ReferredUserSerializer(referred_users,many=True)
     return Response({'Success': True, 'Code': 200, 'referred_users': serializer.data, "Loyalty_points":points}, status=HTTP_200_OK)
-
-
-# @api_view(['POST'])
-# def employees_edit_view(request, id):
-#     try:
-#         employee = Employees.objects.get(id=id)
-#     except Employees.DoesNotExist:
-#         return Response({'message': 'Employee does not exist'}, status=HTTP_404_NOT_FOUND)
-    
-#     serializer = Employeeserializer(employee, data=request.data, partial=True)
-
-#     if serializer.is_valid():        
-#         if employee.is_draft and 'is_draft' in request.data and request.data['is_draft']:
-#             serializer.save() 
-#             return Response({'Success': 'True', 'Code': 200, 'message': 'Employee Draft Update Successful'}, status=HTTP_200_OK)
-            
-#         elif employee.is_draft and 'is_draft' in request.data and not request.data['is_draft']:
-#             serializer.save()
-#             email = serializer.data.get('work_email')
-#             first_name = serializer.data.get('first_name')
-#             last_name = serializer.data.get('last_name')
-#             password = get_random_string(10).lower()
-
-#             try:
-#                 Users.objects.get(email=email)
-#                 return Response({'success': False, 'code': HTTP_400_BAD_REQUEST, 'message': 'email already exists'}, status=HTTP_400_BAD_REQUEST)
-#             except ObjectDoesNotExist:
-#                 try:
-#                     User.objects.create_user(
-#                         username=email, password=password, email=email)
-#                 except:
-#                     return Response({'success': False, 'code': HTTP_400_BAD_REQUEST, 'message': 'User with the email already exist'}, status=HTTP_400_BAD_REQUEST)
-
-#                 my_form = Users(email=email,
-#                                 phone_number=employee.phone_number,
-#                                 first_name=first_name,
-#                                 last_name=last_name,
-#                                 user_type=employee.user_type,
-#                                 modules='[]',
-#                                 roles=employee.roles.id,
-#                                 profile=employee.profile.id,
-#                                 first_account=True,
-#                                 company_id=employee.company_id,
-#                                 status=employee.status)
-#                 my_form.save()
-
-#                 user_id = (Users.objects.last()).id
-#                 employee.user_id=user_id
-#                 employee.save()
-
-#                 user2=User.objects.get(email=email)
-#                 if employee.status =='Inactive':
-#                     user2.is_active=False
-#                     user2.save()
-
-
-#                 company = employee.company_id
-#                 actioned_by = employee.actioned_by_id
-
-#                 modules = f'HR'
-#                 activity = f'Created Employee user_id {user_id}, {email}'
-
-#                 add_system_logs(company, actioned_by=actioned_by,
-#                                 activity=activity, modules=modules)
-
-#                 message = f'Welcome to Tiger your login credentials are <br> email: {email} <br> password {password} '
-#                 subject = "Account Creation"
-#                 send_email(email, message, subject, company)
-            
-        
-#             return Response({'Success': 'True', 'Code': 200, 'message': 'Employee Draft Update Successful'}, status=HTTP_200_OK)
-#         else:
-#             email = serializer.data.get('work_email')
-#             phone_number = serializer.data.get('phone_number')
-#             first_name = serializer.data.get('first_name')
-#             last_name = serializer.data.get('last_name')
-#             user_type = serializer.data.get('user_type')
-#             team = serializer.data.get('team')
-#             roles = serializer.data.get('roles')
-#             profile = serializer.data.get('profile')
-#             company = serializer.data.get('company')
-#             status = serializer.data.get('status')
-#             attributes = serializer.data.get('attributes')
-#             user = Employees.objects.get(pk=id).user_id
-#             print(user)
-#             try:
-#                 n = Employees.objects.get(~Q(id=id), work_email=email)
-#                 return Response({'Success': 'False', 'Code': 400, 'message': 'Email Already Exists'}, status=HTTP_404_NOT_FOUND)
-#             except ObjectDoesNotExist:
-#                 u = Users.objects.get(id=user)
-#                 print(u)
-#                 u.email = email
-#                 u.phone_number = phone_number
-#                 u.first_name = first_name
-#                 u.last_name = last_name
-#                 u.user_type = user_type
-#                 u.roles = roles
-#                 u.profile = profile
-#                 u.status = status
-#                 u.save()
-
-#                 serializer = Employees.objects.get(pk=id)
-
-#                 data = Employeeserializer(
-#                     instance=serializer, data=request.data)
-#                 if data.is_valid():
-#                     data.save()
-
-#                     # team = []
-
-#                     # for team_id in request.data.get('team'):
-#                     #     try:
-#                     #         uteam = Teams.objects.get(id=team_id)
-#                     #         team.append(uteam)
-#                     #     except Teams.DoesNotExist:
-#                     #         raise NotFound()
-
-#                     breaks = []
-
-#                     # for break_id in serializer.data.get('breaks'):
-#                     #     try:
-#                     #         break_schedule = Breaks.objects.get(id=break_id)
-#                     #         breaks.append(break_schedule)
-#                     #     except Teams.DoesNotExist:
-#                     #         raise NotFound()
-
-
-#                     company = data.data.get('company')
-#                     actioned_by = data.data.get('actioned_by')
-
-#                     modules = f'HR'
-#                     activity = f'Edited Employee  {id}, {email}'
-
-#                     add_system_logs(company, actioned_by=actioned_by,
-#                                     activity=activity, modules=modules)
-#             return Response({'Success': 'True', 'Code': 200, 'message': 'Employee Update Successful'}, status=HTTP_200_OK)
-#     return Response(data=serializer.errors, status=HTTP_400_BAD_REQUEST)
 
 
 ### buy policy
@@ -534,3 +406,96 @@ def delete_policy(request, pk):
         return Response(status=204)
     except Policy.DoesNotExist:
         return Response(status=404)
+    
+
+def create_password(short_code, pass_key):
+        timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
+        data = short_code + pass_key + timestamp
+        encoded = base64.b64encode(data.encode("utf-8"))
+        return encoded.decode("utf-8")
+
+def generate_access_token(consumer_key, consumer_secret):
+        url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
+        auth_string = consumer_key + ":" + consumer_secret
+        base64_auth_string = base64.b64encode(auth_string.encode()).decode()
+
+        headers = {
+            "Authorization": "Basic " + base64_auth_string,
+            "Content-Type": "application/json"
+        }
+
+        response = requests.get(url, headers=headers)
+        access_token = response.json()["access_token"]
+        return access_token
+
+    
+
+
+@api_view(['POST'])
+def call_back(request): 
+    print('This is starting')
+    response_data=(request.data)
+    print(request.data)
+    # mpesa_receipt_number = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][1]['Value']
+    # result_desc = response_data['Body']['stkCallback']['ResultDesc']
+    # amount = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][0]['Value']
+    # transaction_date = response_data['Body']['stkCallback']['CallbackMetadata']['Item'][3]['Value']
+    # checkout_request_id = response_data['Body']['stkCallback']['CheckoutRequestID']
+    print(request.data['Body']['stkCallback']['ResultDesc'])
+
+    
+
+
+    # transaction=Transaction.objects.get(checkout_request_id=checkout_request_id)
+    # if mpesa_receipt_number == None:
+    #     transaction.status=False
+    # else:
+    #     transaction.status=True
+    #     transaction.save()
+    # transaction.time_stamp = transaction_date
+    # transaction.amount = amount
+    # transaction.result_description = result_desc
+    # transaction.mpesa_receipt_number = mpesa_receipt_number
+    # transaction.save()
+    
+    return Response(request.data)
+
+
+@api_view(['POST'])
+def stk_request(request):
+    
+    token = request.headers["Authorization"]
+
+    token = token.split(" ")[1]
+    decoded_token = AccessToken(token)
+    decoded_payload = decoded_token.payload['user_id']
+    print (decoded_payload)
+    user=decoded_payload
+
+    data = request.data
+    phone = data.get('phone')
+    amount = data.get('amount')
+
+    transaction=MpesaService(user,amount,phone)
+    resp=transaction.perform_full_transaction()
+    
+    print(resp)
+    if "errorCode" in resp:
+        return Response({"success":False,"message":"Push Not sent successfully"})
+    else:
+        checkout_id=resp['CheckoutRequestID']
+        transaction=Transaction.objects.create(
+            user_id=user,
+            checkout_request_id=checkout_id,
+            phone_number=phone
+
+        )
+        return Response({"success":True,"message":"Push sent successfully"})
+    
+    
+    
+
+
+ 
+    
+  
