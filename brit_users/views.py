@@ -195,13 +195,15 @@ def referral_points(request,pk):
     referred_users = Users.objects.filter(referred_by_id=user)
     count = referred_users.count()
     points = count * 2
+    user2.loyalty_points=points
+    user2.save()
     user3=user2
 
 
     # Save loyalty points for the user
-    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user=user3)
-    loyalty_points.points += points
-    loyalty_points.save()
+    # loyalty_points, created = LoyaltyPoints.objects.get_or_create(user=user3)
+    # loyalty_points.points += points
+    # loyalty_points.save()
 
     serializer = ReferredUserSerializer(referred_users, many=True)
     return Response({'Success': True, 'Code': 200, 'referred_users': serializer.data, 'Loyalty_points': points}, status=HTTP_200_OK)
@@ -229,8 +231,16 @@ def redeem_points(request, pk):
     # Update the loyalty points and apply the discount
     loyalty_points.points -= float(redeemed_points)
     loyalty_points.save()
+    user2.redeemed_points +=redeemed_points
+    user2.save()
+    user2.available_points=user2.loyalty_points-user2.redeemed_points
+    user2.save()
 
-    return Response({'Success': True, 'Code': 200, 'Discount': discount}, status=HTTP_200_OK)
+    userpoints=UserSerializer(user2)
+    discounted_premium=premium.next_premium
+    
+
+    return Response({'Success': True, 'Code': 200, 'user_points': userpoints.data,'discounted_premium':discounted_premium}, status=HTTP_200_OK)
 
 
 ### buy policy

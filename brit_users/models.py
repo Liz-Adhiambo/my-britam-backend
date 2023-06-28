@@ -30,6 +30,23 @@ class Users(models.Model):
     status = models.CharField(max_length=50,blank=True, null=True)
     phone_number = models.CharField(max_length=255,blank=True, null=True)
     full_name=models.CharField(max_length=455, blank=True, null=True)
+    loyalty_points = models.IntegerField(default=0)  # Total loyalty points accumulated
+    redeemed_points = models.IntegerField(default=0)  # Redeemed loyalty points
+    available_points=models.IntegerField(default=0)
+
+    def calculate_loyalty_points(self):
+        # Calculate loyalty points based on referred users
+        referred_users_count = Users.objects.filter(referred_by=self.user).count()
+        self.loyalty_points = referred_users_count * 2
+
+    def redeem_points(self, points):
+        if self.loyalty_points >= points:
+            self.loyalty_points -= points
+            self.redeemed_points += points
+            self.save()
+
+    # def get_available_points(self):
+    #     self.loyalty_points - self.redeemed_points
 
     def save(self, *args, **kwargs):
         if self.code == None:
