@@ -528,7 +528,7 @@ def stk_request(request):
 @api_view(['GET'])
 def get_grouped_policies(request,pk):
     try:
-        policy = Policy.objects.get(policy_type_id=pk)
+        policy = Policy.objects.filter(policy_type_id=pk)
         serializer = PolicySerializer(policy, many=True)
         return Response(serializer.data)
     except Policy.DoesNotExist:
