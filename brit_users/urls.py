@@ -24,6 +24,8 @@ urlpatterns = [
     path('user/loyalty/points/<int:pk>',referral_points, name='referral_points'),
     path('user/details/<int:pk>',get_user_details, name='get_user_details'),
     path('user/profile/detail/<int:pk>',update_user_info, name='update_user_info'),
+    path('policies/grouped/<int:pk>',get_grouped_policies, name='get_grouped_policies'),
+    path('points/redeem/<int:pk>',redeem_points, name='redeem_points'),
 
     ###mpesa###
 

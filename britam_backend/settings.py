@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'brit_users',
     'rest_framework',
     'rest_framework_simplejwt',
+    'ckeditor',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
