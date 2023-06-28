@@ -95,11 +95,30 @@ class UserPolicy(models.Model):
     resident_country=models.CharField(blank=True, null=True)
     sum_assured=models.CharField(blank=True, null=True)
     status=models.CharField(blank=True, null=True)
+    claim_number = models.CharField(max_length=250, blank=True, null=True)
+    claim_status = models.CharField(max_length=250, blank=True, null=True)
+    claim_amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+
     createdAt = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     updatedAt = models.DateTimeField(auto_now=True, blank=True, null=True)
 
     # def __str__(self):
     #     return self.status
+
+    # Methods related to claims
+    def file_claim(self, claim_number, claim_amount):
+        self.claim_number = claim_number
+        self.claim_amount = claim_amount
+        self.claim_status = 'Pending'
+        self.save()
+
+    def approve_claim(self):
+        self.claim_status = 'Approved'
+        self.save()
+
+    def reject_claim(self):
+        self.claim_status = 'Rejected'
+        self.save()
 
 
 

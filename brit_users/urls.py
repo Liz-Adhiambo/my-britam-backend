@@ -26,6 +26,7 @@ urlpatterns = [
     path('user/profile/detail/<int:pk>',update_user_info, name='update_user_info'),
     path('policies/grouped/<int:pk>',get_grouped_policies, name='get_grouped_policies'),
     path('points/redeem/<int:pk>',redeem_points, name='redeem_points'),
+    path('userpolicy/claim/<int:user_policy_id>',make_claim, name='redeem_points'),
 
     ###mpesa###
 

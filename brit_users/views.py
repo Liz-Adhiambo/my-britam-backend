@@ -535,6 +535,26 @@ def get_grouped_policies(request,pk):
         return Response(status=404)
     
 
+###Make Claim#####
+@api_view(['POST'])
+def make_claim(request, user_policy_id):
+    try:
+        user_policy = UserPolicy.objects.get(id=user_policy_id)
+    except UserPolicy.DoesNotExist:
+        return Response({'Success': False, 'Code': 400, 'Message': 'User policy not found.'}, status=HTTP_400_BAD_REQUEST)
+    
+    # Validate request data
+    claim_number = request.data.get('claim_number')
+    claim_amount = request.data.get('claim_amount')
+
+    if not claim_number or not claim_amount:
+        return Response({'Success': False, 'Code': 400, 'Message': 'Missing required fields.'}, status=HTTP_400_BAD_REQUEST)
+    
+    # File the claim
+    user_policy.file_claim(claim_number, claim_amount)
+    
+    return Response({'Success': True, 'Code': 200, 'Message': 'Claim filed successfully.'}, status=HTTP_200_OK)
+
 
  
     
