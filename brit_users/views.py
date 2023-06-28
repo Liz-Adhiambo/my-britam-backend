@@ -236,7 +236,7 @@ def redeem_points(request, pk):
     user2.available_points=user2.loyalty_points-user2.redeemed_points
     user2.save()
 
-    userpoints=UserSerializer(user2)
+    userpoints=UsersSerializer(user2)
     discounted_premium=premium.next_premium
     
 
