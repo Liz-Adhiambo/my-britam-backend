@@ -195,11 +195,11 @@ def referral_points(request,pk):
     referred_users = Users.objects.filter(referred_by_id=user)
     count = referred_users.count()
     points = count * 2
-    user3=user2.id
+    user3=user2
 
 
     # Save loyalty points for the user
-    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user_id=user3)
+    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user=user3)
     loyalty_points.points += points
     loyalty_points.save()
 
@@ -210,22 +210,24 @@ def referral_points(request,pk):
 def redeem_points(request, pk):
     try:
         user = User.objects.get(id=pk)
+        
     except User.DoesNotExist:
         return Response({'Success': False, 'Code': 400}, status=HTTP_400_BAD_REQUEST)
 
     # Retrieve the loyalty points for the user
-    loyalty_points = LoyaltyPoints.objects.get(user=user)
+    user2=Users.objects.get(user=user)
+    loyalty_points = LoyaltyPoints.objects.get(user=user2)
 
     # Calculate the discount based on the redeemed points
     redeemed_points = request.data.get('redeemed_points', 0)
     policy = request.data.get('policy')
-    discount = (redeemed_points // 50) * 0.98  # 2% discount for every 50 points redeemed
+    discount = (float(redeemed_points) // 50) * 0.98  # 2% discount for every 50 points redeemed
     premium=UserPolicy.objects.get(id=policy)
-    premium.next_premium=discount
+    premium.next_premium=discount*float(premium.premium)
     premium.save()
 
     # Update the loyalty points and apply the discount
-    loyalty_points.points -= redeemed_points
+    loyalty_points.points -= float(redeemed_points)
     loyalty_points.save()
 
     return Response({'Success': True, 'Code': 200, 'Discount': discount}, status=HTTP_200_OK)
