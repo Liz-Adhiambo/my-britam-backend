@@ -197,7 +197,7 @@ def referral_points(request,pk):
     points = count * 2
 
     # Save loyalty points for the user
-    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user=user)
+    loyalty_points, created = LoyaltyPoints.objects.get_or_create(user_id=user)
     loyalty_points.points += points
     loyalty_points.save()
 
