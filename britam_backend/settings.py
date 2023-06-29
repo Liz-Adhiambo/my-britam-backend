@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'ckeditor',
     'embed_video',
-    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
