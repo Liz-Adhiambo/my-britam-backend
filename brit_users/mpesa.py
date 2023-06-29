@@ -51,19 +51,32 @@ class MpesaService():
                 "Content-Type": "application/json"
         }
 
-        request = {
-                "BusinessShortCode": "174379",
+        # request = {
+        #         "BusinessShortCode": "174379",
+        #         "Password": self.create_password("174379", self.PASS_KEY),
+        #         "Timestamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
+        #         "TransactionType": "CustomerPayBillOnline",
+        #         "Amount": amount,
+        #         "PartyA": phone,
+        #         "PartyB": "174379",
+        #         "PhoneNumber": phone,
+        #         "CallBackURL": "https://ef5a-62-8-70-50.ngrok-free.app/api/v1/callback",
+        #         "AccountReference": "Test",
+        #         "TransactionDesc": "Test"
+        # }
+        request={
+                "BusinessShortCode": 174379,
                 "Password": self.create_password("174379", self.PASS_KEY),
                 "Timestamp": datetime.datetime.now().strftime("%Y%m%d%H%M%S"),
                 "TransactionType": "CustomerPayBillOnline",
                 "Amount": amount,
                 "PartyA": phone,
-                "PartyB": "174379",
+                "PartyB": 174379,
                 "PhoneNumber": phone,
                 "CallBackURL": "https://my-britam-backend-production.up.railway.app/api/v1/callback",
-                "AccountReference": "Test",
-                "TransactionDesc": "Test"
-        }
+                "AccountReference": "CompanyXLTD",
+                "TransactionDesc": "Payment of X" 
+            }
 
         response = requests.post(url, json=request, headers=headers)
         print(response.json())
