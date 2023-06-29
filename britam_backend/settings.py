@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app','127.0.0.1']
+ALLOWED_HOSTS = ['my-britam-backend-production.up.railway.app','127.0.0.1','ef5a-62-8-70-50.ngrok-free.app']
 DATABASE_URL='postgresql://postgres:ezB098bxCZr7VFZQfAYg@containers-us-west-148.railway.app:6880/railway'
 
 
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'ckeditor',
     'embed_video',
+    'rest_framework_swagger',
 ]
 
 MIDDLEWARE = [
@@ -163,7 +164,8 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'loginAttempts': '6/hr',
         'user': '1000/min',
-    }
+    },
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
 
     # 'DEFAULT_FILTER_BACKENDS': ['dj_rql.drf.RQLFilterBackend']
 
