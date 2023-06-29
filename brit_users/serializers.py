@@ -78,4 +78,4 @@ class ReferredUserSerializer(serializers.ModelSerializer):
     user = UserSerializer2()
     class Meta:
         model = Users
-        fields = ['user', 'middle_name', 'dob', 'code', 'referred_by', 'referral_link', 'gender', 'phone_number', 'full_name','bio','profile_photo']
+        fields = ['user', 'middle_name', 'dob', 'code', 'referred_by', 'referral_link', 'gender', 'phone_number', 'full_name','bio','profile_photo','redeemed_points','available_points']
