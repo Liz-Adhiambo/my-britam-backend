@@ -27,6 +27,7 @@ urlpatterns = [
     path('policies/grouped/<int:pk>',get_grouped_policies, name='get_grouped_policies'),
     path('points/redeem/<int:pk>',redeem_points, name='redeem_points'),
     path('userpolicy/claim/<int:user_policy_id>',make_claim, name='redeem_points'),
+    path('user/transaction/<int:pk>',get_transactions, name='get_transactions'),
 
     ###mpesa###
 

@@ -64,6 +64,11 @@ class User2PolicySerializer(serializers.ModelSerializer):
         model = UserPolicy
         fields = ('__all__')
 
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ('__all__')
+
 # class StkRequestSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = StkRequest

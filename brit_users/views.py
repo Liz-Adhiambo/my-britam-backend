@@ -549,6 +549,16 @@ def get_grouped_policies(request,pk):
         return Response(serializer.data)
     except Policy.DoesNotExist:
         return Response(status=404)
+
+####general and life policies###
+@api_view(['GET'])
+def get_transactions(request,pk):
+    try:
+        user = Transaction.objects.filter(user=pk)
+        serializer = TransactionSerializer(user, many=True)
+        return Response(serializer.data)
+    except Users.DoesNotExist:
+        return Response(status=404)
     
 
 ###Make Claim#####

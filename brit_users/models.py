@@ -148,7 +148,7 @@ class Transaction(models.Model):
     phone_number = models.CharField(max_length=200)
     transaction_desc = models.CharField(max_length=200, blank=True, null=True)
     checkout_request_id = models.CharField(max_length=200, blank=True, null=True)
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     mpesa_receipt_number = models.CharField(max_length=200, blank=True, null=True)
     result_description = models.CharField(max_length=200, blank=True, null=True)
 
