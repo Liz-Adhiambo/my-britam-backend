@@ -220,7 +220,7 @@ def redeem_points(request, pk):
 
     # Retrieve the loyalty points for the user
     user2=Users.objects.get(user=user)
-    loyalty_points = LoyaltyPoints.objects.get(user=user2)
+    loyalty_points = Users.objects.get(user=user2).available_points
 
     # Calculate the discount based on the redeemed points
     redeemed_points = request.data.get('redeemed_points', 0)
@@ -231,9 +231,10 @@ def redeem_points(request, pk):
     premium.save()
 
     # Update the loyalty points and apply the discount
-    loyalty_points.points -= float(redeemed_points)
-    loyalty_points.save()
-    user2.redeemed_points +=redeemed_points
+    # loyalty_points-= float(redeemed_points)
+
+    # loyalty_points.save()
+    user2.redeemed_points =redeemed_points
     user2.save()
     user2.available_points=user2.loyalty_points-user2.redeemed_points
     user2.save()
