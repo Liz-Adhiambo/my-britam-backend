@@ -246,7 +246,7 @@ def redeem_points(request, pk):
     return Response({'Success': True, 'Code': 200, 'user_points': userpoints.data,'discounted_premium':discounted_premium}, status=HTTP_200_OK)
 
 
-### buy policy
+### buy user policy
 @api_view(['POST'])
 def user_policy_create_view(request):
     serializer = UserPolicySerializer(data=request.data)
